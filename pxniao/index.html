@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		canvas {
+			display: block;
+			border: 1px solid red;
+			margin: 0 auto;
+			
+		}
+		
+		.box{
+			position: relative;
+			width: 360px;height: 512px;
+			margin:0 auto;
+			overflow: hidden;
+		}
+		.box .ff{
+		    width: 100px;
+			height: 50px;
+			
+			position: absolute;
+			top:0;
+			left:0px;
+			z-index: 3;
+		}
+		#star{
+			width: 114px;height: 70px;
+			background: url(images/button_play.png) no-repeat 0 0;
+		/*	margin:-200px auto 0px;
+			z-index: 3;*/
+			position: absolute;
+			top:220px;
+			left:115px;
+			display: block;
+		}
+		#end{
+			width: 204px;height: 54px;
+			background:url(images/text_game_over.png) no-repeat 0 0;
+			position: absolute;
+			top:70px;
+			left:75px;
+			display: none;
+		}
+		#ready{
+			width: 196px;height: 62px;
+			background:url(images/text_ready.png) no-repeat 0 0;
+			position: absolute;
+			top:70px;
+			left:75px;
+			display: block;
+		}
+		.box .ji img{
+			width: 48px;height: 88px;
+			position: absolute;
+			top:200px;
+			left:150px;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="box">
+		<canvas id="myCanvas" width="360" height="512"></canvas>
+		<div class="ff">
+			<span>分数</span>
+			<span id="fs"></span>
+			
+			<div id="end"></div>
+		</div>
+		<div id="star"></div>
+		<div id="ready"></div>
+		<div class="ji"><img src="images/3.png" id="jishu"></div>
+	</div>
+
+	
+	<script type="text/javascript" src="js/Game.js"></script>
+	<script type="text/javascript" src="js/Pipe.js"></script>
+	<script type="text/javascript" src="js/Bird.js"></script>
+	<script type="text/javascript" src="js/Background.js"></script>
+	
+
+
+
+	<script type="text/javascript">
+		var fs=document.getElementById("fs");
+		var arr =  ["images/bird0_0.png", "images/bird0_1.png", "images/bird0_2.png", "images/bg_day.png", "images/land.png", "images/pipe_down.png", "images/pipe_up.png"]
+        
+		var star=document.getElementById("star");
+		var end=document.getElementById("end");
+        var jishu=document.getElementById("jishu");
+        var ready=document.getElementById("ready");
+
+			// 调用loadImage
+		loadImage(arr, function(imgArr) {
+			// 获取元素
+			var canvas = document.getElementById("myCanvas");
+			// 获取画笔
+			var ctx = canvas.getContext("2d");
+
+			// 初始化bird类
+			var bird = new Bird(imgArr.slice(0, 3), 100, 100);
+			// 初始化pipe类
+			var pipe = new Pipe(imgArr[5], imgArr[6], 4, 360);
+			// 初始化land类
+			var land = new Background(imgArr[4], 4, 0, 400);
+			// 初始化mountain类
+			var mountain = new Background(imgArr[3], 2, 0, 0);
+
+
+			// 开始游戏
+			window.g = new Game(ctx, bird, pipe, land, mountain,0);
+			
+		})
+
+
+
+
+
+		function loadImage(arr,callBack){
+			var idx=0;
+			
+			var loadImageArr = [];
+
+			arr.forEach(function(value,index){
+				//原生构造函数
+				var img = new Image();
+				img.src=value;
+				img.onload=function(){
+					// 改变信号量
+					idx++;
+					// 由于在load事件中加载图片的顺序可能不一致，为了保证图片加载顺序要使用index
+					loadImageArr[index] = this;
+					// console.log(loadImageArr);
+					// console.log(idx);
+					// 判断信号量是否与数组的长度一致
+					if (idx === arr.length) {
+						// 执行callBack
+						callBack(loadImageArr);
+
+					}
+
+			    }
+
+			})
+		}
+
+
+	
+
+	</script>
+</body>
+</html>
